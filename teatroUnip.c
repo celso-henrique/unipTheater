@@ -83,7 +83,7 @@ void generateTicket(struct TheaterSession *session, int place) {
  */
 void finishTicket(struct TheaterSession *session) {
   int selectedOption;
-  char* menuOptions[] = {"Inteira (R$30,00)", "Voltar para seleção da peça"};
+  char* menuOptions[] = {"Inteira (R$30,00)", "Meia (R$15,00)", "Gratuita", "Voltar para seleção da peça"};
 
   renderHeader();
 
@@ -99,6 +99,15 @@ void finishTicket(struct TheaterSession *session) {
     case 1:
       session->soldValues[session->soldPlaces - 1] = 30;
       break;
+    case 2:
+      session->soldValues[session->soldPlaces - 1] = 15;
+      break;
+    case 3:
+      session->soldValues[session->soldPlaces - 1] = 0;
+      break;
+    case 4:
+      sellTicketMenu();
+      return;
     }
 
     renderHeader();
@@ -106,9 +115,7 @@ void finishTicket(struct TheaterSession *session) {
       "Venda efetuada com sucesso, lugares disponíveis: %d\n\n",
       session->totalPlaces - session->soldPlaces
     );
-
     generateTicket(session, session->soldPlaces);
-
     pressAnyKey();
     mainMenu();
   } else {
@@ -143,10 +150,32 @@ void sellTicketMenu() {
   }
 }
 
+void cashClosing() {
+  int totalSoldTickets = 0;
+  int totalSoldValue = 0;
+  int i;
+
+  totalSoldTickets = session1.soldPlaces + session2.soldPlaces;
+
+  for (i = 0; i < session1.soldPlaces; i++) {
+    totalSoldValue = totalSoldValue + session1.soldValues[i];
+  }
+
+  for (i = 0; i < session2.soldPlaces; i++) {
+    totalSoldValue = totalSoldValue + session2.soldValues[i];
+  }
+
+  renderHeader();
+  printf("Total de ingressos vendidos: %d\n", totalSoldTickets);
+  printf("Valor total: R$%d,00\n\n", totalSoldValue);
+  pressAnyKey();
+  mainMenu();
+}
+
 // Menu principal
 void mainMenu() {
   int selectedOption;
-  char* menuOptions[] = {"Vender ingressos", "Sair"};
+  char* menuOptions[] = {"Vender ingressos", "Fechar caixa", "Sair"};
 
   renderHeader();
   selectedOption = renderMenu(
@@ -160,6 +189,9 @@ void mainMenu() {
     sellTicketMenu();
     break;
   case 2:
+    cashClosing();
+    break;
+  case 3:
     exit(0);
     break;
   }
