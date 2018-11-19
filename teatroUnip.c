@@ -70,10 +70,9 @@ void generateTicket(struct TheaterSession *session, int place) {
   struct tm tm = *localtime(&t);
 
   renderHeader();
-  printf("Venda efetuada com sucesso, lugares disponíveis: %d\n\n", place);
   printf("Ticket: \n\n");
   printf("Peça: %s\n", session->title);
-  printf("Assento: %d\n", session->soldPlaces);
+  printf("Assento: %d\n", place);
   printf("Data: %d/%d/%d - 21:00\n\n", tm.tm_mday, tm.tm_mon,tm.tm_year+1900);
   pressAnyKey();
   mainMenu();
@@ -104,6 +103,7 @@ void finishTicket(struct TheaterSession *session) {
       break;
     }
 
+    printf("Venda efetuada com sucesso, lugares disponíveis: %d\n\n", 30 - session->soldPlaces);
     generateTicket(session, session->soldPlaces);
   } else {
     printf("Sessão esgotada, escolha outra sessão. \n\n");
@@ -119,7 +119,7 @@ void sellTicketMenu() {
 
   renderHeader();
   selectedOption = renderMenu(
-    "Sessões para hoje às 21:00,\nselecione a peça que deseja vender ingressos:",
+    "Sessões para hoje às 21:00, \nselecione a peça que deseja vender ingressos:",
     menuOptions,
     sizeof(menuOptions) / sizeof(char*)
   );
