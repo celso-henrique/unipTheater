@@ -43,7 +43,11 @@ void renderHeader() {
   printf("*******************************************************\n\n");
 };
 
-// Renderiza menus e retorna a opção escolhida
+/*
+ Função responsável pela renderização de menus, recebe um título, um matriz de
+ items que serão exibidos e o tamanho dessa matriz, no final retorna um inteiro com
+ a opção escolhida.
+*/
 int renderMenu(char* title, char* items[], int size) {
   int i;
   int option;
@@ -150,6 +154,7 @@ void sellTicketMenu() {
   }
 }
 
+// Função que realiza o fechamento do caixa
 void cashClosing() {
   int totalSoldTickets = 0;
   int totalSoldValue = 0;
