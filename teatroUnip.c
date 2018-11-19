@@ -64,11 +64,28 @@ int renderMenu(char* title, char* items[], int size) {
   return option;
 }
 
-// Seleção de tipo de ingresso
-void finishTicket(struct TheaterSession *session) {
-  int selectedOption;
+// Função que gera um ticket, recebe como parâmetros a sessão e o assento
+void generateTicket(struct TheaterSession *session, int place) {
   time_t t = time(NULL);
   struct tm tm = *localtime(&t);
+
+  renderHeader();
+  printf("Venda efetuada com sucesso, lugares disponíveis: %d\n\n", place);
+  printf("Ticket: \n\n");
+  printf("Peça: %s\n", session->title);
+  printf("Assento: %d\n", session->soldPlaces);
+  printf("Data: %d/%d/%d - 21:00\n\n", tm.tm_mday, tm.tm_mon,tm.tm_year+1900);
+  pressAnyKey();
+  mainMenu();
+}
+
+/*
+ Executa a venda do ingresso, recebe um ponteiro para um struct do tipo session
+ verifica se a propriedade soldPlaces não atingiu 30 e executa a venda, caso contrário
+ exibe uma mensagem de sessão esgotada.
+ */
+void finishTicket(struct TheaterSession *session) {
+  int selectedOption;
   char* menuOptions[] = {"Inteira (R$30,00)", "Voltar para seleção da peça"};
 
   renderHeader();
@@ -80,21 +97,14 @@ void finishTicket(struct TheaterSession *session) {
       sizeof(menuOptions) / sizeof(char*)
     );
 
+    session->soldPlaces = session->soldPlaces + 1;
     switch(selectedOption) {
     case 1:
-      session->soldPlaces = session->soldPlaces + 1;
       session->soldValues[session->soldPlaces - 1] = 30;
       break;
     }
 
-    renderHeader();
-    printf("Venda efetuada com sucesso, lugares disponíveis: %d\n\n", 30 - session->soldPlaces);
-    printf("Ticket: \n\n");
-    printf("Peça: %s\n", session->title);
-    printf("Assento: %d\n", session->soldPlaces);
-    printf("Data: %d/%d/%d - 21:00\n\n", tm.tm_mday, tm.tm_mon,tm.tm_year+1900);
-    pressAnyKey();
-    mainMenu();
+    generateTicket(session, session->soldPlaces);
   } else {
     printf("Sessão esgotada, escolha outra sessão. \n\n");
     pressAnyKey();
