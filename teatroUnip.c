@@ -10,11 +10,12 @@ void sellTicketMenu();
 struct TheaterSession  {
   char title[50];
   int soldPlaces;
+  int totalPlaces;
   int soldValues[30];
 };
 
-struct TheaterSession session1 = {.title = "O Fantasma da Ópera", .soldPlaces = 0};
-struct TheaterSession session2 = {.title = "Romeu e Julieta", .soldPlaces = 0};
+struct TheaterSession session1 = {.title = "O Fantasma da Ópera", .soldPlaces = 0, .totalPlaces = 30};
+struct TheaterSession session2 = {.title = "Romeu e Julieta", .soldPlaces = 0, .totalPlaces = 30};
 
 // Função para limpar a tela
 void clearScreen() {
@@ -69,13 +70,10 @@ void generateTicket(struct TheaterSession *session, int place) {
   time_t t = time(NULL);
   struct tm tm = *localtime(&t);
 
-  renderHeader();
   printf("Ticket: \n\n");
   printf("Peça: %s\n", session->title);
   printf("Assento: %d\n", place);
   printf("Data: %d/%d/%d - 21:00\n\n", tm.tm_mday, tm.tm_mon,tm.tm_year+1900);
-  pressAnyKey();
-  mainMenu();
 }
 
 /*
@@ -89,7 +87,7 @@ void finishTicket(struct TheaterSession *session) {
 
   renderHeader();
 
-  if (session->soldPlaces < 30) {
+  if (session->soldPlaces < session->totalPlaces) {
     selectedOption = renderMenu(
       "Selecione o tipo de ingresso:",
       menuOptions,
@@ -103,8 +101,16 @@ void finishTicket(struct TheaterSession *session) {
       break;
     }
 
-    printf("Venda efetuada com sucesso, lugares disponíveis: %d\n\n", 30 - session->soldPlaces);
+    renderHeader();
+    printf(
+      "Venda efetuada com sucesso, lugares disponíveis: %d\n\n",
+      session->totalPlaces - session->soldPlaces
+    );
+
     generateTicket(session, session->soldPlaces);
+
+    pressAnyKey();
+    mainMenu();
   } else {
     printf("Sessão esgotada, escolha outra sessão. \n\n");
     pressAnyKey();
