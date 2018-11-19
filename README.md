@@ -1,5 +1,4 @@
 # Teatro Unip
-====================
 Simple application written in C to sell theater tickets.
 
 
